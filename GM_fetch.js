@@ -314,7 +314,7 @@
           headers: _parsedRespHeaders,
           url: responseURL(resp.finalUrl, rawRespHeaders, _parsedRespHeaders)
         }
-        var body = resp.responseText;
+        var body = resp.response;
         resolve(new Response(body, options))
       }
 
@@ -328,9 +328,10 @@
       });
       
       if(typeof request._bodyInit !== 'undefined') {
-         xhr_details.data = request._bodyInit;
+        xhr_details.data = request._bodyInit;
       }
-      
+
+      xhr_details.responseType = "blob";
       GM_xmlhttpRequest(xhr_details);
       
       /*
