@@ -298,6 +298,9 @@
       
       xhr_details.synchronous = false;
 
+      if (init.onprogress !== undefined)
+	xhr_details.onprogress = init.onprogress;
+
       xhr_details.onload = function(resp) {
         var status = resp.status
         if (status < 100 || status > 599) {
