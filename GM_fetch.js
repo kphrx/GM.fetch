@@ -298,7 +298,7 @@
       
       xhr_details.synchronous = false;
 
-      if (init.onprogress !== undefined)
+      if (init != null && init.onprogress !== undefined)
 	xhr_details.onprogress = init.onprogress;
 
       xhr_details.onload = function(resp) {
