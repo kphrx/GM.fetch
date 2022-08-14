@@ -3,7 +3,7 @@
   
   var Promise = window.Bluebird || window.Promise;
 
-  if (self.GM_fetch) {
+  if (self.GM.fetch) {
     return
   }
 
@@ -266,7 +266,7 @@
   self.Request = Request;
   self.Response = Response;
 
-  self.GM_fetch = function(input, init) {
+  self.GM.fetch = function(input, init) {
     // TODO: Request constructor should accept input, init
     var request
     if (Request.prototype.isPrototypeOf(input) && !init) {
@@ -335,7 +335,7 @@
       }
 
       xhr_details.responseType = "blob";
-      GM_xmlhttpRequest(xhr_details);
+      GM.xmlHttpRequest(xhr_details);
       
       /*
       // need to see if there's any way of doing this
@@ -343,12 +343,12 @@
         xhr.withCredentials = true
       }
       
-      GM_xmlhttpRequest has a responseType param, but this didn't seem to work, at least in TamperMonkey
+      GM.xmlHttpRequest has a responseType param, but this didn't seem to work, at least in TamperMonkey
       if ('responseType' in xhr && support.blob) {
         xhr.responseType = 'blob'
       }
       */
     })
   }
-  self.GM_fetch.polyfill = true
+  self.GM.fetch.polyfill = true
 })();
