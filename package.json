@@ -10,7 +10,8 @@
     }
   ],
   "devDependencies": {
-    "jshint": "^2.13.6"
+    "jshint": "^2.13.6",
+    "terser": "^5.39.0"
   },
   "files": [
     "LICENSE",
