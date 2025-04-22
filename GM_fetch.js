@@ -30,7 +30,7 @@
       xhr_details.onprogress = init.onprogress;
     }
 
-    const resp = await GM.xmlHttpRequest(xhr_details).catch((err) => {
+    const resp = await self.GM.xmlHttpRequest(xhr_details).catch((err) => {
       throw new TypeError('Network request failed', { cause: err });
     }).then((r) => {
       if (r.status < 100 || r.status > 599) {
@@ -53,7 +53,7 @@
           case 'url':
             return resp.finalUrl;
           case 'redirected':
-            return resp.finalUrl != request.url;
+            return resp.finalUrl !== request.url;
           default:
             return Reflect.get(target, prop);
         }
