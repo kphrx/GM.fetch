@@ -16,6 +16,9 @@
 
   self.GM.fetch = async function(input, init) {
     const request = new Request(input, init);
+    const signal = request.signal;
+
+    signal.throwIfAborted();
 
     const xhr_details = {
       method: request.method,
@@ -30,14 +33,26 @@
       xhr_details.onprogress = init.onprogress;
     }
 
-    const resp = await self.GM.xmlHttpRequest(xhr_details).catch((err) => {
+    signal.throwIfAborted();
+
+    const { promise: req, resolve, reject } = Promise.withResolvers();
+    xhr_details.onabort = () => {
+      reject(signal.aborted && signal.reason || new DOMException('The operation was aborted.', 'AbortError'));
+    }
+    const requestControl = self.GM.xmlHttpRequest(xhr_details);
+    request.signal.addEventListener('abort', () => {
+      requestControl.abort();
+    });
+    resolve(requestControl.catch((err) => {
       throw new TypeError('Network request failed', { cause: err });
-    }).then((r) => {
+    }).then(r => {
       if (r.status < 100 || r.status > 599) {
         throw new TypeError('Network request failed');
       }
       return r;
-    });
+    }));
+
+    const resp = await req;
 
     const res = new Response(resp.response, {
       status: resp.status,
