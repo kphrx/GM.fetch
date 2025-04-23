@@ -1,8 +1,30 @@
 (function() {
   'use strict';
-  
-  if (self.GM.fetch) {
+
+  if (typeof self.GM?.xmlHttpRequest !== 'function' && typeof self.GM_xmlhttpRequest !== 'function') {
+    return;
+  }
+
+  if (typeof self.GM === 'undefined') {
+    self.GM = {};
+  }
+  const GM = self.GM;
+
+  if (GM.fetch) {
     return
+  }
+
+  if (typeof GM.xmlHttpRequest !== 'function') {
+    GM.xmlHttpRequest = async function(details) {
+      return new Promise((resolve, reject) => {
+        const { onload, onerror } = details;
+        self.GM_xmlhttpRequest({
+          ...details,
+          onload: onload ? v => { resolve(v); onload(v); } : resolve,
+          onerror: onerror ? v => { reject(v); onerror(v); } : reject
+        });
+      });
+    }
   }
 
   function parseHeaders(responseHeaders) {
@@ -39,7 +61,7 @@
     xhr_details.onabort = () => {
       reject(signal.aborted && signal.reason || new DOMException('The operation was aborted.', 'AbortError'));
     }
-    const requestControl = self.GM.xmlHttpRequest(xhr_details);
+    const requestControl = GM.xmlHttpRequest(xhr_details);
     request.signal.addEventListener('abort', () => {
       requestControl.abort();
     });
